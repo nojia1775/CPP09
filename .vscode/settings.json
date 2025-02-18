@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"bitcoinexchange.hpp": "c",
+		"iostream": "c"
+	}
+}
