@@ -10,6 +10,17 @@
 
 # define BUFFER_SIZE 1024
 
-std::map<std::string, float>	BitcoinExchange(std::ifstream& db, std::ifstream& file);
+void	BitcoinExchange(std::ifstream& db, std::ifstream& file);
+
+class	Error : public std::exception
+{
+	private:
+		std::string	_error;
+
+	public:
+				Error(std::string error);
+				~Error(void) throw();
+		const char	*what(void) const throw();
+};
 
 #endif

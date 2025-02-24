@@ -19,6 +19,6 @@ int	main(int argc, char **argv)
 		std::cout << "Error: could not open file\n";
 		return 1;
 	}
-	std::map<std::string, float> dbValues = BitcoinExchange(db, file);
+	BitcoinExchange(db, file);
 	return 0;
 }
