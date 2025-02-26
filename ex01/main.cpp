@@ -4,7 +4,7 @@ int	main(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		std::cout << "Error: Bad argument\n";
+		std::cout << "Error: bad argument\n";
 		return 1;
 	}
 	try
@@ -12,6 +12,6 @@ int	main(int argc, char **argv)
 		RPN rpn(argv[1]);
 		std::cout << rpn.getResult() << "\n";
 	}
-	catch (const std::exception& e) { std::cout << e.what() << "\n"; }
+	catch (const std::exception& e) { std::cout << "Error: " << e.what() << "\n"; }
 	return 0;
 }

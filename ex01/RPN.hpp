@@ -27,12 +27,12 @@ class	RPN
 		class			Error : public std::exception
 		{
 			private:
-				std::string	_error;
+				const char	*_error;
 
 			public:
-							Error(const char *error) : _error(error) {}
-							~Error(void) throw() {}
-				const std::string	what(void) const throw();
+						Error(const char *error) : _error(error) {}
+						~Error(void) throw() {}
+				const char	*what(void) const throw();
 		};
 };
 
