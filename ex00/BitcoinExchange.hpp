@@ -23,6 +23,6 @@ class	Error : public std::exception
 		const char	*what(void) const throw();
 };
 
-void	parsing(std::string& line);
+float	parsing(std::string& line);
 
 #endif

@@ -1,19 +1,8 @@
 #include "BitcoinExchange.hpp"
 
-static size_t	date_format(std::string& date)
+static std::map<std::string, float>	getDbValues(std::ifstream& db)
 {
-	size_t result = 0;
-	for (size_t i = 0 ; i < 10 ; i++)
-	{
-		if (std::isdigit(date[i]))
-			result = result * 10 + (date[i] - '0');
-	}
-	return result;
-}
-
-static std::map<size_t, float>	getDbValues(std::ifstream& db)
-{
-	std::map<size_t, float> dbValues;
+	std::map<std::string, float> dbValues;
 	char buffer[BUFFER_SIZE];
 	int i = 0;
 	std::string tmp;
@@ -23,7 +12,7 @@ static std::map<size_t, float>	getDbValues(std::ifstream& db)
 		{
 			buffer[10] = '\0';
 			tmp = buffer;
-			dbValues[date_format(tmp)] = std::atol(&buffer[11]);
+			dbValues[tmp] = std::atof(&buffer[11]);
 		}
 		i++;
 	}
@@ -33,7 +22,7 @@ static std::map<size_t, float>	getDbValues(std::ifstream& db)
 
 void	BitcoinExchange(std::ifstream& db, std::ifstream& fd)
 {
-	std::map<size_t, float> dbValues = getDbValues(db);
+	std::map<std::string, float> dbValues = getDbValues(db);
 	size_t i = 0;
 	char buffer[BUFFER_SIZE] = {0};
 	std::string tmp;
@@ -44,7 +33,11 @@ void	BitcoinExchange(std::ifstream& db, std::ifstream& fd)
 			try
 			{
 				tmp = buffer;
-				parsing(tmp);
+				float result = parsing(tmp);
+				std::map<std::string, float>::iterator bitcoin = dbValues.upper_bound(tmp);
+				bitcoin--;
+				tmp[10] = '\0';
+				std::cout << tmp.c_str() << " => " << result  << " = " << bitcoin->second * result << "\n";
 			}
 			catch (const std::exception& e) { std::cout << e.what() << "\n"; }
 		}
@@ -52,13 +45,16 @@ void	BitcoinExchange(std::ifstream& db, std::ifstream& fd)
 		{
 			if (buffer != std::string("date | value"))
 			{
-				std::cout << "Error : file should begin with 'date | value'\n";
+				std::cout << "Error: file should begin with 'date | value'\n";
 				fd.close();
 				exit(1);
 			}
 		}
 		i++;
 	}
+	if (i == 0)	
+		std::cout << "Error: file is empty\n";
+	fd.close();
 }
 
 Error::Error(std::string error) : _error(error) {}
