@@ -118,7 +118,7 @@ float	parsing(std::string& line)
 {
 	if (line.size() < 14)
 	{
-		throw Error("Error : bad input => " + line);
+		throw Error("Error: bad input => " + line);
 		return -1;
 	}
 	if (!goodChar(line))
@@ -128,8 +128,8 @@ float	parsing(std::string& line)
 	if (!goodDate(line))
 		return -1;
 	if (std::atof(&line[13]) < 0)
-		throw Error("Error : not a positive number");
+		throw Error("Error: not a positive number");
 	if (std::atof(&line[13]) > 2147483647)
-		throw Error("Error : too large number");
+		throw Error("Error: too large number");
 	return std::atof(&line[13]);
 }
