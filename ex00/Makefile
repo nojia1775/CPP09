@@ -3,7 +3,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98 -g -MMD
 
 SRCS =	main.cpp \
-	BitcoinExchange.cpp
+	BitcoinExchange.cpp \
+	parsing.cpp
 
 OBJ_DIR = obj
 

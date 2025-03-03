@@ -23,6 +23,6 @@ class	Error : public std::exception
 		const char	*what(void) const throw();
 };
 
-A FINIR PSQ T AS EU LA FLEMME DE LE FAIRE AU TAF
+void	parsing(std::string& line);
 
 #endif
