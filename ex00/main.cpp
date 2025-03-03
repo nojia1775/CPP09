@@ -16,6 +16,7 @@ int	main(int argc, char **argv)
 	std::ifstream file(argv[1]);
 	if (!file)
 	{
+		db.close();
 		std::cout << "Error: could not open file\n";
 		return 1;
 	}
