@@ -22,11 +22,11 @@ void	fusion(T& array, const int& left, const int& middle, const int& right)
 	size_t b = right - middle;
 	T l(a), r(b);
 
-	T::iterator itArr = array.begin() + left;
-	T::iterator itL = l.begin();
+	typename T::iterator itArr = array.begin() + left;
+	typename T::iterator itL = l.begin();
 	for (size_t i = 0 ; i < a ; i++)
 		*(itL++) = *(itArr++);
-	T::iterator itR = r.begin();
+	typename T::iterator itR = r.begin();
 	itArr = array.begin() + middle + 1;
 	for (size_t i = 0 ; i < b ; i++)
 		*(itR++) = *(itArr++);
@@ -50,36 +50,54 @@ void	fusion(T& array, const int& left, const int& middle, const int& right)
 }
 
 template <typename T>
-static void	MergeSort(T& array, const int& left, const int& right)
+void	MergeSort(T& array, const int& left, const int& right)
 {
 	if (left < right)
 	{
 		int middle = left + (right - left) / 2;
 		MergeSort(array, left, middle);
-		MergeSort(array, middle, right);
+		MergeSort(array, middle + 1, right);
 		fusion(array, left, middle, right);
 	}
 }
 
-// template <typename T>
-// static void	FordJohnson(T& array)
-// {
-// 	T<int> max;
-// 	T<int> min;
-// 	int last = -1;
-// 	T<int> result;
-// 	for (T::iterator it = array.begin() ; it != array.end() ; ++it)
-// 	{
-// 		if ((it + 1) != array.end())
-// 		{
-// 			max.push_back(std::max(*it, *(it + 1)));
-// 			min.push_back(std::min(*it, *(it + 1)));
-// 		}
-// 		else
-// 			last = *it;
-// 	}
-// 	return result;
-// }
+template <typename T>
+void	insertion(T& min, T& max)
+{
+	for (typename T::iterator minIt = min.begin() ; minIt != min.end() ; ++minIt)
+	{
+		for (typename T::iterator maxIt = max.begin() ; maxIt != max.end() : ++maxIt)
+		{
+			if (*minIt < *maxIt)
+			{
+				max.insert(maxIt, *minIt);
+				break;
+			}
+		}
+	}
+}
+
+template <typename T>
+void	FordJohnson(T& array)
+{
+	T max;
+	T min;
+	int last = -1;
+	T result;
+	for (typename T::iterator it = array.begin() ; it != array.end() ; ++it)
+	{
+		if ((it + 1) != array.end())
+		{
+			max.push_back(std::max(*it, *(it + 1)));
+			min.push_back(std::min(*it, *(it + 1)));
+		}
+		else
+			last = *it;
+	}
+	MergeSort(max, 0, max.size() - 1);
+	insertion(min, max);
+	array = max;
+}
 
 void	PmergeMe(char **argv)
 {
@@ -87,7 +105,10 @@ void	PmergeMe(char **argv)
 	std::list<int> list;
 	fill(vector, argv + 1);
 	fill(list, argv + 1);
-	MergeSort(vector, 0, vector.size() - 1);
-	for (std::vector<int>::iterator it = vector.begin() ; it != vector.end() ; ++it)
+	FordJohnson(vector);
+	FordJohnson(list);
+	for (std::vector<int>::const_iterator it = vector.begin() ; it != vector.end() ; ++it)
+		std::cout << *it << "\n";
+	for (std::list<int>::const_iterator it = list.begin() ; it != list.end() ; ++it)
 		std::cout << *it << "\n";
 }
