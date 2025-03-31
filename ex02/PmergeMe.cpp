@@ -16,9 +16,6 @@ static void	fill(T& array, char **argv)
 }
 
 template <typename T>
-void	changeIterator(T& it, const int& index) { std::advance(it, index); }
-
-template <typename T>
 void	fusion(T& array, const int& left, const int& middle, const int& right)
 {
 	int a = middle - left + 1;
@@ -43,50 +40,50 @@ void	fusion(T& array, const int& left, const int& middle, const int& right)
 	itArr = array.begin();
 	while (i < a && j < b)
 	{
-		changeIterator(itL, i);
-		changeIterator(itR, j);
+		std::advance(itL, i);
+		std::advance(itR, j);
 		if (*itL <= *itR)
 		{
-			changeIterator(itL, -i);
-			changeIterator(itR, -j);
-			changeIterator(itArr, k);
-			changeIterator(itL, i);
+			std::advance(itL, -i);
+			std::advance(itR, -j);
+			std::advance(itArr, k);
+			std::advance(itL, i);
 			*itArr = *itL;
-			changeIterator(itArr, -k);
-			changeIterator(itL, -i);
+			std::advance(itArr, -k);
+			std::advance(itL, -i);
 			k++;
 			i++;
 		}
 		else
 		{
-			changeIterator(itL, -i);
-			changeIterator(itR, -j);
-			changeIterator(itArr, k);
-			changeIterator(itR, j);
+			std::advance(itL, -i);
+			std::advance(itR, -j);
+			std::advance(itArr, k);
+			std::advance(itR, j);
 			*itArr = *itR;
-			changeIterator(itArr, -k);
-			changeIterator(itR, -j);
+			std::advance(itArr, -k);
+			std::advance(itR, -j);
 			k++;
 			j++;
 		}
 	}
 	while (i < a)
 	{
-		changeIterator(itArr, k);
-		changeIterator(itL, i);
+		std::advance(itArr, k);
+		std::advance(itL, i);
 		*itArr = *itL;
-		changeIterator(itArr, -k);
-		changeIterator(itL, -i);
+		std::advance(itArr, -k);
+		std::advance(itL, -i);
 		i++;
 		k++;
 	}
 	while (j < b)
 	{
-		changeIterator(itArr, k);
-		changeIterator(itR, j);
+		std::advance(itArr, k);
+		std::advance(itR, j);
 		*itArr = *itR;
-		changeIterator(itArr, -k);
-		changeIterator(itR, -j);
+		std::advance(itArr, -k);
+		std::advance(itR, -j);
 		k++;
 		j++;
 	}
@@ -119,6 +116,8 @@ void	insertion(T& min, T& max, const int& last)
 				break;
 			}
 		}
+		if (maxIt == max.end())
+			max.insert(maxIt, *minIt);
 	}
 	if (last >= 0)
 	{
@@ -132,7 +131,6 @@ void	insertion(T& min, T& max, const int& last)
 			}
 		}
 		typename T::iterator endIt = max.end();
-		std::advance(endIt, -1);
 		max.insert(endIt, last);
 	}
 }
@@ -145,18 +143,23 @@ void	FordJohnson(T& array)
 	int last = -1;
 	T result;
 	typename T::iterator it = array.begin();
-	for ( ; it != array.end() ; ++it)
+	while (it != array.end())
 	{
-		if (++it != array.end())
+		++it;
+		if (it != array.end())
 		{
 			--it;
 			max.push_back(std::max(*it, *(++it)));
 			--it;
-			min.push_back(std::min(*it, *(++it)));
+			min.push_back(std::min(*(it++), *it));
 			--it;
+			std::advance(it, 2);
 		}
 		else
+		{
 			last = *(--it);
+			break;
+		}
 	}
 	MergeSort(max, 0, max.size() - 1);
 	insertion(min, max, last);
@@ -169,14 +172,16 @@ void	PmergeMe(char **argv)
 	std::list<int> list;
 	fill(vector, argv + 1);
 	fill(list, argv + 1);
+	std::cout << "Before:\t";
+	std::vector<int>::const_iterator it = vector.begin();
+	for ( ; it != vector.end() ; ++it)
+		std::cout << *it << " ";
+	std::cout << "\n";
 	FordJohnson(vector);
 	FordJohnson(list);
-	std::cout << "STD::VECTOR :\n";
-	std::vector<int>::const_iterator vectorIt = vector.begin();
-	for ( ; vectorIt != vector.end() ; ++vectorIt)
-		std::cout << *vectorIt << "\n";
-	std::cout << "\nSTD::LIST: \n";
-	std::list<int>::const_iterator listIt = list.begin();
-	for ( ; listIt != list.end() ; ++listIt)
-		std::cout << *listIt << "\n";
+	std::cout << "After:\t";
+	it = vector.begin();
+	for ( ; it != vector.end() ; ++it)
+		std::cout << *it << " ";
+	std::cout << "\n";
 }

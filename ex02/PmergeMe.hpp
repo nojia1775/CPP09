@@ -17,9 +17,6 @@ void	insertion(T& min, T& max, const int& last);
 template <typename T>
 void	FordJohnson(T& array);
 
-template <typename T>
-void	changeIterator(typename T::iterator& it, const int& index);
-
 class	Error : public std::exception
 {
 	const char	*what(void) const throw() { return "Error"; }
