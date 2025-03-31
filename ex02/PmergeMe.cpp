@@ -16,37 +16,80 @@ static void	fill(T& array, char **argv)
 }
 
 template <typename T>
+void	changeIterator(T& it, const int& index) { std::advance(it, index); }
+
+template <typename T>
 void	fusion(T& array, const int& left, const int& middle, const int& right)
 {
-	size_t a = middle - left + 1;
-	size_t b = right - middle;
+	int a = middle - left + 1;
+	int b = right - middle;
 	T l(a), r(b);
 
-	typename T::iterator itArr = array.begin() + left;
+	typename T::iterator itArr = array.begin();
+	std::advance(itArr, left);
 	typename T::iterator itL = l.begin();
-	for (size_t i = 0 ; i < a ; i++)
+	for (int i = 0 ; i < a ; i++)
 		*(itL++) = *(itArr++);
 	typename T::iterator itR = r.begin();
-	itArr = array.begin() + middle + 1;
-	for (size_t i = 0 ; i < b ; i++)
+	itArr = array.begin();
+	std::advance(itArr, 1 + middle);
+	for (int i = 0 ; i < b ; i++)
 		*(itR++) = *(itArr++);
-	size_t i = 0;
-	size_t j = 0;
-	size_t k = left;
+	int i = 0;
+	int j = 0;
+	int k = left;
 	itL = l.begin();
 	itR = r.begin();
 	itArr = array.begin();
 	while (i < a && j < b)
 	{
-		if (*(itL + i) <= *(itR + j))
-			*(itArr + k++) = *(itL + i++);
+		changeIterator(itL, i);
+		changeIterator(itR, j);
+		if (*itL <= *itR)
+		{
+			changeIterator(itL, -i);
+			changeIterator(itR, -j);
+			changeIterator(itArr, k);
+			changeIterator(itL, i);
+			*itArr = *itL;
+			changeIterator(itArr, -k);
+			changeIterator(itL, -i);
+			k++;
+			i++;
+		}
 		else
-			*(itArr + k++) = *(itR + j++);
+		{
+			changeIterator(itL, -i);
+			changeIterator(itR, -j);
+			changeIterator(itArr, k);
+			changeIterator(itR, j);
+			*itArr = *itR;
+			changeIterator(itArr, -k);
+			changeIterator(itR, -j);
+			k++;
+			j++;
+		}
 	}
 	while (i < a)
-		*(itArr + k++) = *(itL + i++);
+	{
+		changeIterator(itArr, k);
+		changeIterator(itL, i);
+		*itArr = *itL;
+		changeIterator(itArr, -k);
+		changeIterator(itL, -i);
+		i++;
+		k++;
+	}
 	while (j < b)
-		*(itArr + k++) = *(itR + j++);
+	{
+		changeIterator(itArr, k);
+		changeIterator(itR, j);
+		*itArr = *itR;
+		changeIterator(itArr, -k);
+		changeIterator(itR, -j);
+		k++;
+		j++;
+	}
 }
 
 template <typename T>
@@ -62,11 +105,13 @@ void	MergeSort(T& array, const int& left, const int& right)
 }
 
 template <typename T>
-void	insertion(T& min, T& max)
+void	insertion(T& min, T& max, const int& last)
 {
-	for (typename T::iterator minIt = min.begin() ; minIt != min.end() ; ++minIt)
+	typename T::iterator minIt = min.begin();
+	for ( ; minIt != min.end() ; ++minIt)
 	{
-		for (typename T::iterator maxIt = max.begin() ; maxIt != max.end() : ++maxIt)
+		typename T::iterator maxIt = max.begin();
+		for ( ; maxIt != max.end() ; ++maxIt)
 		{
 			if (*minIt < *maxIt)
 			{
@@ -74,6 +119,21 @@ void	insertion(T& min, T& max)
 				break;
 			}
 		}
+	}
+	if (last >= 0)
+	{
+		typename T::iterator it = max.begin();
+		for ( ; it != max.end() ; ++it)
+		{
+			if (last < *it)
+			{
+				max.insert(it, last);
+				return;
+			}
+		}
+		typename T::iterator endIt = max.end();
+		std::advance(endIt, -1);
+		max.insert(endIt, last);
 	}
 }
 
@@ -84,18 +144,22 @@ void	FordJohnson(T& array)
 	T min;
 	int last = -1;
 	T result;
-	for (typename T::iterator it = array.begin() ; it != array.end() ; ++it)
+	typename T::iterator it = array.begin();
+	for ( ; it != array.end() ; ++it)
 	{
-		if ((it + 1) != array.end())
+		if (++it != array.end())
 		{
-			max.push_back(std::max(*it, *(it + 1)));
-			min.push_back(std::min(*it, *(it + 1)));
+			--it;
+			max.push_back(std::max(*it, *(++it)));
+			--it;
+			min.push_back(std::min(*it, *(++it)));
+			--it;
 		}
 		else
-			last = *it;
+			last = *(--it);
 	}
 	MergeSort(max, 0, max.size() - 1);
-	insertion(min, max);
+	insertion(min, max, last);
 	array = max;
 }
 
@@ -107,8 +171,12 @@ void	PmergeMe(char **argv)
 	fill(list, argv + 1);
 	FordJohnson(vector);
 	FordJohnson(list);
-	for (std::vector<int>::const_iterator it = vector.begin() ; it != vector.end() ; ++it)
-		std::cout << *it << "\n";
-	for (std::list<int>::const_iterator it = list.begin() ; it != list.end() ; ++it)
-		std::cout << *it << "\n";
+	std::cout << "STD::VECTOR :\n";
+	std::vector<int>::const_iterator vectorIt = vector.begin();
+	for ( ; vectorIt != vector.end() ; ++vectorIt)
+		std::cout << *vectorIt << "\n";
+	std::cout << "\nSTD::LIST: \n";
+	std::list<int>::const_iterator listIt = list.begin();
+	for ( ; listIt != list.end() ; ++listIt)
+		std::cout << *listIt << "\n";
 }

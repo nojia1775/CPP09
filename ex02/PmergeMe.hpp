@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <list>
 #include <vector>
+#include <iterator>
 
 void	PmergeMe(char **argv);
 
@@ -11,10 +12,13 @@ template <typename T>
 void	MergeSort(T& array, const int& left, const int& right);
 
 template <typename T>
-void	insertion(T& min, T& max);
+void	insertion(T& min, T& max, const int& last);
 
 template <typename T>
 void	FordJohnson(T& array);
+
+template <typename T>
+void	changeIterator(typename T::iterator& it, const int& index);
 
 class	Error : public std::exception
 {
