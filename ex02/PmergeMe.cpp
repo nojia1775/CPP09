@@ -166,22 +166,40 @@ void	FordJohnson(T& array)
 	array = max;
 }
 
-void	PmergeMe(char **argv)
+void	PmergeMe(int argc, char **argv)
 {
 	std::vector<int> vector;
 	std::list<int> list;
 	fill(vector, argv + 1);
 	fill(list, argv + 1);
-	std::cout << "Before:\t";
-	std::vector<int>::const_iterator it = vector.begin();
-	for ( ; it != vector.end() ; ++it)
-		std::cout << *it << " ";
+	std::cout << "Before (std::vector):\t";
+	std::vector<int>::const_iterator Vit = vector.begin();
+	for ( ; Vit != vector.end() ; ++Vit)
+		std::cout << *Vit << " ";
 	std::cout << "\n";
+	std::cout << "Before (std::list):\t";
+	std::list<int>::const_iterator Lit = list.begin();
+	for ( ; Lit != list.end() ; ++Lit)
+		std::cout << *Lit << " ";
+	std::cout << "\n";
+	clock_t startVector = clock();
 	FordJohnson(vector);
+	clock_t endVector = clock();
+	clock_t startList = clock();
 	FordJohnson(list);
-	std::cout << "After:\t";
-	it = vector.begin();
-	for ( ; it != vector.end() ; ++it)
-		std::cout << *it << " ";
+	clock_t endList = clock();
+	std::cout << "After (std::vector):\t";
+	Vit = vector.begin();
+	for ( ; Vit != vector.end() ; ++Vit)
+		std::cout << *Vit << " ";
 	std::cout << "\n";
+	std::cout << "After (std::list):\t";
+	Lit = list.begin();
+	for ( ; Lit != list.end() ; ++Lit)
+		std::cout << *Lit << " ";
+	std::cout << "\n";
+	double timeVector = (double)(endVector - startVector) / CLOCKS_PER_SEC * 1000000;
+	double timeList = (double)(endList - startList) / CLOCKS_PER_SEC * 1000000;
+	std::cout << "Time to process a range of " << argc - 1 << " elements with std::vector : " << timeVector << " us\n";
+	std::cout << "Time to process a range of " << argc - 1 << " elements with std::list : " << timeList << " us\n";
 }

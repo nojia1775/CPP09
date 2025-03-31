@@ -5,8 +5,9 @@
 #include <list>
 #include <vector>
 #include <iterator>
+#include <ctime>
 
-void	PmergeMe(char **argv);
+void	PmergeMe(int argc, char **argv);
 
 template <typename T>
 void	MergeSort(T& array, const int& left, const int& right);
