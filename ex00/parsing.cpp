@@ -129,7 +129,7 @@ float	parsing(std::string& line)
 		return -1;
 	if (std::atof(&line[13]) < 0)
 		throw Error("Error: not a positive number");
-	if (std::atof(&line[13]) > 2147483647)
+	if (std::atof(&line[13]) > 1000)
 		throw Error("Error: too large number");
 	return std::atof(&line[13]);
 }
